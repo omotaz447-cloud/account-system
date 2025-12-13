@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "../../../../Hassan"
+		},
+		{
+			"path": "../../.."
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "account-dashboard"
+	}
+}
