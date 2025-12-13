@@ -7,8 +7,8 @@ export default function Sidebar({ branches = [] }) {
   return (
     <aside className="sidebar">
       <div>
-        <div className="brand">نظام إدارة الحسابات</div>
-        <div className="small-muted">لوحة تحكم الفروع</div>
+        <div className="brand">  </div>
+        <div className="small-muted">  </div>
       </div>
 
       <nav className="branch-list" aria-label="Branches">
@@ -24,7 +24,6 @@ export default function Sidebar({ branches = [] }) {
       </nav>
 
       <div style={{ marginTop: "auto", fontSize: 13, color: "#9fb3ff" }}>
-        صنع خصيصاً — قابل للتعديل والربط بقاعدة بيانات لاحقاً
       </div>
     </aside>
   );

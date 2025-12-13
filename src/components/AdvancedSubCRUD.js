@@ -39,6 +39,7 @@ export default function AdvancedSubCRUD({
   // filters
   const [q, setQ] = useState("");
   const [nameQ, setNameQ] = useState("");
+  const [dateQ, setDateQ] = useState("");
 
   // Load data from Firestore
   async function loadData() {
@@ -109,15 +110,42 @@ export default function AdvancedSubCRUD({
       if (!v.includes(nameQ.toLowerCase())) return false;
     }
 
+    if (dateQ) {
+      let recordDate = "";
+
+      if (typeof r.date === "string") {
+        recordDate = r.date;
+      } else if (r.createdAt?.toDate) {
+        recordDate = r.createdAt.toDate().toISOString().slice(0, 10);
+      }
+
+      if (!recordDate || recordDate !== dateQ) return false;
+    }
+
     return true;
   });
+
+  // =====================================
+  // ✅ إجمالي الجدول كله (بعد الفلترة)
+  // =====================================
+  const tableTotal = useMemo(() => {
+    return filteredRows.reduce((sum, row) => {
+      return (
+        sum +
+        numericFields.reduce((s, key) => {
+          const v = Number(row[key] || 0);
+          return s + (isNaN(v) ? 0 : v);
+        }, 0)
+      );
+    }, 0);
+  }, [filteredRows, numericFields]);
 
   return (
     <div style={{ width: "100%" }}>
       <h3>{title}</h3>
 
       {/* Filters */}
-      <div style={{ marginBottom: 12, display: "flex", gap: 8 }}>
+      <div style={{ marginBottom: 12, display: "flex", gap: 8, flexWrap: "wrap" }}>
         <input
           className="input"
           placeholder="بحث عام..."
@@ -131,6 +159,14 @@ export default function AdvancedSubCRUD({
           placeholder="بحث بالاسم..."
           value={nameQ}
           onChange={e => setNameQ(e.target.value)}
+          style={{ minWidth: 180 }}
+        />
+
+        <input
+          className="input"
+          type="date"
+          value={dateQ}
+          onChange={e => setDateQ(e.target.value)}
           style={{ minWidth: 180 }}
         />
 
@@ -224,6 +260,18 @@ export default function AdvancedSubCRUD({
             )}
           </tbody>
         </table>
+
+        {/* ✅ إجمالي الجدول */}
+        <div
+          style={{
+            marginTop: 14,
+            padding: 12,
+            fontWeight: "bold",
+            textAlign: "left"
+          }}
+        >
+          الإجمالي: {tableTotal}
+        </div>
       </div>
     </div>
   );

@@ -84,7 +84,6 @@ export default function App() {
   const branches = listBranches() || [];
   const user = getLoggedUser();
 
-  // Protect routes
   useEffect(() => {
     if (!user && location.pathname !== "/login") {
       navigate("/login", { replace: true });
@@ -99,11 +98,7 @@ export default function App() {
   const showTopbar = location.pathname !== "/login";
 
   return (
-    <div
-      className="app-root"
-      dir="rtl"
-      style={{ height: "100vh", display: "flex", flexDirection: "column" }}
-    >
+    <div className="app-root" dir="rtl" style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
       {showTopbar && <Topbar onLogout={handleLogout} />}
 
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
@@ -112,7 +107,6 @@ export default function App() {
         <main style={{ flex: 1, padding: 20, overflow: "auto" }}>
           <Routes>
             <Route path="/login" element={<LoginPage />} />
-
             <Route path="/" element={<Navigate to="/branch/belina" replace />} />
 
             {branches.map((b) => (
@@ -128,22 +122,42 @@ export default function App() {
             ))}
 
             {/* BELINA */}
-            <Route path="/branch/belina/workers" element={<ProtectedRoute allowed="belina"><BelinaWorkers /></ProtectedRoute>} />
-            <Route path="/branch/belina/republic-exhibition" element={<ProtectedRoute allowed="belina"><BelinaExhibition /></ProtectedRoute>} />
-            <Route path="/branch/belina/traders" element={<ProtectedRoute allowed="belina"><BelinaTraders /></ProtectedRoute>} />
-            <Route path="/branch/belina/sales-exhibition" element={<ProtectedRoute allowed="belina"><BelinaSales /></ProtectedRoute>} />
-            <Route path="/branch/belina/baika" element={<ProtectedRoute allowed="belina"><BelinaBaika /></ProtectedRoute>} />
-            <Route path="/branch/belina/mahmoud" element={<ProtectedRoute allowed="belina"><BelinaMahmoud /></ProtectedRoute>} />
-            <Route path="/branch/belina/wahid" element={<ProtectedRoute allowed="belina"><BelinaWahid /></ProtectedRoute>} />
+<Route
+  path="/branch/belina/center"
+  element={
+    <ProtectedRoute allowed="belina">
+      <BelinaExhibition />
+    </ProtectedRoute>
+  }
+/>
 
-            {/* GARGA */}
-            <Route path="/branch/garga/workers-mall" element={<ProtectedRoute allowed="garga"><GargaWorkersMall /></ProtectedRoute>} />
-            <Route path="/branch/garga/traders-mmall" element={<ProtectedRoute allowed="garga"><GargaTradersMall /></ProtectedRoute>} />
-            <Route path="/branch/garga/exhibition-mall" element={<ProtectedRoute allowed="garga"><GargaExhibitionMall /></ProtectedRoute>} />
-            <Route path="/branch/garga/sales-mall" element={<ProtectedRoute allowed="garga"><GargaSalesMall /></ProtectedRoute>} />
-            <Route path="/branch/garga/baika" element={<ProtectedRoute allowed="garga"><GargaBaika /></ProtectedRoute>} />
-            <Route path="/branch/garga/mahmoud" element={<ProtectedRoute allowed="garga"><GargaMahmoud /></ProtectedRoute>} />
-            <Route path="/branch/garga/wahid" element={<ProtectedRoute allowed="garga"><GargaWahid /></ProtectedRoute>} />
+<Route path="/branch/belina/workers" element={<ProtectedRoute allowed="belina"><BelinaWorkers /></ProtectedRoute>} />
+<Route path="/branch/belina/republic-exhibition" element={<ProtectedRoute allowed="belina"><BelinaExhibition /></ProtectedRoute>} />
+<Route path="/branch/belina/traders" element={<ProtectedRoute allowed="belina"><BelinaTraders /></ProtectedRoute>} />
+<Route path="/branch/belina/sales-exhibition" element={<ProtectedRoute allowed="belina"><BelinaSales /></ProtectedRoute>} />
+<Route path="/branch/belina/baika" element={<ProtectedRoute allowed="belina"><BelinaBaika /></ProtectedRoute>} />
+<Route path="/branch/belina/mahmoud" element={<ProtectedRoute allowed="belina"><BelinaMahmoud /></ProtectedRoute>} />
+<Route path="/branch/belina/wahid" element={<ProtectedRoute allowed="belina"><BelinaWahid /></ProtectedRoute>} />
+
+
+           {/* GARGA */}
+<Route
+  path="/branch/garga/center"
+  element={
+    <ProtectedRoute allowed="garga">
+      <GargaExhibitionMall />
+    </ProtectedRoute>
+  }
+/>
+
+<Route path="/branch/garga/workers-mall" element={<ProtectedRoute allowed="garga"><GargaWorkersMall /></ProtectedRoute>} />
+<Route path="/branch/garga/traders-mall" element={<ProtectedRoute allowed="garga"><GargaTradersMall /></ProtectedRoute>} />
+<Route path="/branch/garga/exhibition-mall" element={<ProtectedRoute allowed="garga"><GargaExhibitionMall /></ProtectedRoute>} />
+<Route path="/branch/garga/sales-mall" element={<ProtectedRoute allowed="garga"><GargaSalesMall /></ProtectedRoute>} />
+<Route path="/branch/garga/baika" element={<ProtectedRoute allowed="garga"><GargaBaika /></ProtectedRoute>} />
+<Route path="/branch/garga/mahmoud" element={<ProtectedRoute allowed="garga"><GargaMahmoud /></ProtectedRoute>} />
+<Route path="/branch/garga/wahid" element={<ProtectedRoute allowed="garga"><GargaWahid /></ProtectedRoute>} />
+
 
             {/* DALAA */}
             <Route path="/branch/dalaa/workers" element={<ProtectedRoute allowed="dalaa"><DalaaWorkers /></ProtectedRoute>} />
