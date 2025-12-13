@@ -75,8 +75,9 @@ import GhazaBaika from "./pages/ghaza/GhazaBaika";
 try {
   initSampleData();
 } catch (e) {
-  console.warn("initSampleData skipped");
+  console.warn("initSampleData failed");
 }
+
 
 export default function App() {
   const navigate = useNavigate();

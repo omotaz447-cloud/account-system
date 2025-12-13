@@ -1,24 +1,26 @@
-// src/components/ProtectedRoute.js
 import React from "react";
-import { Navigate } from "react-router-dom";
 import PropTypes from "prop-types";
+import { Navigate } from "react-router-dom";
 import { getLoggedUser } from "../services/auth";
 
 export default function ProtectedRoute({ children, allowed }) {
   const user = getLoggedUser();
 
-  if (!user) return <Navigate to="/login" replace />;
+  // not logged in
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
 
-  // Admin can access all
+  // admin can access everything
   if (user.allowedPage === "all") {
     return children;
   }
 
-  // Normal user — check permission
+  // restricted user
   if (allowed && user.allowedPage !== allowed) {
     return (
       <div style={{ color: "red", textAlign: "center", marginTop: 40 }}>
-        ❌ ليس لديك صلاحية للدخول لهذه الصفحة
+        ❌ غير مسموح لك بالدخول إلى هذه الصفحة
       </div>
     );
   }
@@ -27,6 +29,6 @@ export default function ProtectedRoute({ children, allowed }) {
 }
 
 ProtectedRoute.propTypes = {
-  children: PropTypes.node,
-  allowed: PropTypes.string
+  children: PropTypes.node.isRequired,
+  allowed: PropTypes.string,
 };
