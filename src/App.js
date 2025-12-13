@@ -1,8 +1,11 @@
 // src/App.js
 import React, { useEffect } from "react";
 import {
-  Routes, Route, Navigate,
-  useNavigate, useLocation, 
+  Routes,
+  Route,
+  Navigate,
+  useNavigate,
+  useLocation,
 } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
@@ -68,8 +71,12 @@ import GhazaBasemWahid from "./pages/ghaza/GhazaBasemWahid";
 import GhazaMenaWahid from "./pages/ghaza/GhazaMenaWahid";
 import GhazaBaika from "./pages/ghaza/GhazaBaika";
 
-/* Init */
-try { initSampleData(); } catch (e) {}
+/* ---------- Init sample data (no empty catch) ---------- */
+try {
+  initSampleData();
+} catch (e) {
+  console.warn("initSampleData skipped");
+}
 
 export default function App() {
   const navigate = useNavigate();
@@ -77,7 +84,7 @@ export default function App() {
   const branches = listBranches() || [];
   const user = getLoggedUser();
 
-  // redirect if not logged in
+  // Redirect to login if not authenticated
   useEffect(() => {
     if (!user && location.pathname !== "/login") {
       navigate("/login", { replace: true });
@@ -92,7 +99,11 @@ export default function App() {
   const showTopbar = location.pathname !== "/login";
 
   return (
-    <div className="app-root" dir="rtl" style={{ height: "100vh", display: "flex", flexDirection: "column" }}>
+    <div
+      className="app-root"
+      dir="rtl"
+      style={{ height: "100vh", display: "flex", flexDirection: "column" }}
+    >
       {showTopbar && <Topbar onLogout={handleLogout} />}
 
       <div style={{ display: "flex", flex: 1, overflow: "hidden" }}>
@@ -100,13 +111,13 @@ export default function App() {
 
         <main style={{ flex: 1, padding: 20, overflow: "auto" }}>
           <Routes>
-
+            {/* LOGIN */}
             <Route path="/login" element={<LoginPage />} />
 
-            {/* Redirect root */}
+            {/* DEFAULT */}
             <Route path="/" element={<Navigate to="/branch/belina" replace />} />
 
-            {/* Branch Home Pages */}
+            {/* BRANCH ROOT */}
             {branches.map((b) => (
               <Route
                 key={b.id}
@@ -119,7 +130,7 @@ export default function App() {
               />
             ))}
 
-            {/* ========== BELINA ========== */}
+            {/* BELINA */}
             <Route path="/branch/belina/workers" element={<ProtectedRoute allowed="belina"><BelinaWorkers /></ProtectedRoute>} />
             <Route path="/branch/belina/republic-exhibition" element={<ProtectedRoute allowed="belina"><BelinaExhibition /></ProtectedRoute>} />
             <Route path="/branch/belina/traders" element={<ProtectedRoute allowed="belina"><BelinaTraders /></ProtectedRoute>} />
@@ -128,16 +139,16 @@ export default function App() {
             <Route path="/branch/belina/mahmoud" element={<ProtectedRoute allowed="belina"><BelinaMahmoud /></ProtectedRoute>} />
             <Route path="/branch/belina/wahid" element={<ProtectedRoute allowed="belina"><BelinaWahid /></ProtectedRoute>} />
 
-            {/* ========== GARGA ========== */}
+            {/* GARGA */}
             <Route path="/branch/garga/workers-mall" element={<ProtectedRoute allowed="garga"><GargaWorkersMall /></ProtectedRoute>} />
-            <Route path="/branch/garga/traders-mmall" element={<ProtectedRoute allowed="garga"><GargaTradersMall /></ProtectedRoute>} />
+            <Route path="/branch/garga/traders-mall" element={<ProtectedRoute allowed="garga"><GargaTradersMall /></ProtectedRoute>} />
             <Route path="/branch/garga/exhibition-mall" element={<ProtectedRoute allowed="garga"><GargaExhibitionMall /></ProtectedRoute>} />
             <Route path="/branch/garga/sales-mall" element={<ProtectedRoute allowed="garga"><GargaSalesMall /></ProtectedRoute>} />
             <Route path="/branch/garga/baika" element={<ProtectedRoute allowed="garga"><GargaBaika /></ProtectedRoute>} />
             <Route path="/branch/garga/mahmoud" element={<ProtectedRoute allowed="garga"><GargaMahmoud /></ProtectedRoute>} />
             <Route path="/branch/garga/wahid" element={<ProtectedRoute allowed="garga"><GargaWahid /></ProtectedRoute>} />
 
-            {/* ========== DALAA ========== */}
+            {/* DALAA */}
             <Route path="/branch/dalaa/workers" element={<ProtectedRoute allowed="dalaa"><DalaaWorkers /></ProtectedRoute>} />
             <Route path="/branch/dalaa/traders" element={<ProtectedRoute allowed="dalaa"><DalaaTraders /></ProtectedRoute>} />
             <Route path="/branch/dalaa/center" element={<ProtectedRoute allowed="dalaa"><DalaaCenter /></ProtectedRoute>} />
@@ -148,7 +159,7 @@ export default function App() {
             <Route path="/branch/dalaa/basem" element={<ProtectedRoute allowed="dalaa"><DalaaBasem /></ProtectedRoute>} />
             <Route path="/branch/dalaa/emad" element={<ProtectedRoute allowed="dalaa"><DalaaEmad /></ProtectedRoute>} />
 
-            {/* ========== SEEMA ========== */}
+            {/* SEEMA */}
             <Route path="/branch/seema/center" element={<ProtectedRoute allowed="seema"><SeemaCenter /></ProtectedRoute>} />
             <Route path="/branch/seema/workers" element={<ProtectedRoute allowed="seema"><SeemaWorkers /></ProtectedRoute>} />
             <Route path="/branch/seema/sales" element={<ProtectedRoute allowed="seema"><SeemaSales /></ProtectedRoute>} />
@@ -160,7 +171,7 @@ export default function App() {
             <Route path="/branch/seema/emad" element={<ProtectedRoute allowed="seema"><SeemaEmad /></ProtectedRoute>} />
             <Route path="/branch/seema/mena" element={<ProtectedRoute allowed="seema"><SeemaMena /></ProtectedRoute>} />
 
-            {/* ========== GHAZA ========== */}
+            {/* GHAZA */}
             <Route path="/branch/ghaza/workers" element={<ProtectedRoute allowed="ghaza"><GhazaWorkers /></ProtectedRoute>} />
             <Route path="/branch/ghaza/center" element={<ProtectedRoute allowed="ghaza"><GhazaCenter /></ProtectedRoute>} />
             <Route path="/branch/ghaza/traders" element={<ProtectedRoute allowed="ghaza"><GhazaTraders /></ProtectedRoute>} />
@@ -172,8 +183,8 @@ export default function App() {
             <Route path="/branch/ghaza/mena_wahid" element={<ProtectedRoute allowed="ghaza"><GhazaMenaWahid /></ProtectedRoute>} />
             <Route path="/branch/ghaza/baika" element={<ProtectedRoute allowed="ghaza"><GhazaBaika /></ProtectedRoute>} />
 
+            {/* 404 */}
             <Route path="*" element={<div style={{ color: "#fff" }}>الصفحة غير موجودة</div>} />
-
           </Routes>
         </main>
       </div>
