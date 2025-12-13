@@ -71,13 +71,12 @@ import GhazaBasemWahid from "./pages/ghaza/GhazaBasemWahid";
 import GhazaMenaWahid from "./pages/ghaza/GhazaMenaWahid";
 import GhazaBaika from "./pages/ghaza/GhazaBaika";
 
-/* ---------- Init sample data (no empty catch) ---------- */
+/* ---------- Init Sample Data ---------- */
 try {
   initSampleData();
 } catch (e) {
-  console.warn("initSampleData failed");
+  console.warn("Sample data already initialized");
 }
-
 
 export default function App() {
   const navigate = useNavigate();
@@ -85,7 +84,7 @@ export default function App() {
   const branches = listBranches() || [];
   const user = getLoggedUser();
 
-  // Redirect to login if not authenticated
+  // Protect routes
   useEffect(() => {
     if (!user && location.pathname !== "/login") {
       navigate("/login", { replace: true });
@@ -112,13 +111,10 @@ export default function App() {
 
         <main style={{ flex: 1, padding: 20, overflow: "auto" }}>
           <Routes>
-            {/* LOGIN */}
             <Route path="/login" element={<LoginPage />} />
 
-            {/* DEFAULT */}
             <Route path="/" element={<Navigate to="/branch/belina" replace />} />
 
-            {/* BRANCH ROOT */}
             {branches.map((b) => (
               <Route
                 key={b.id}
@@ -142,7 +138,7 @@ export default function App() {
 
             {/* GARGA */}
             <Route path="/branch/garga/workers-mall" element={<ProtectedRoute allowed="garga"><GargaWorkersMall /></ProtectedRoute>} />
-            <Route path="/branch/garga/traders-mall" element={<ProtectedRoute allowed="garga"><GargaTradersMall /></ProtectedRoute>} />
+            <Route path="/branch/garga/traders-mmall" element={<ProtectedRoute allowed="garga"><GargaTradersMall /></ProtectedRoute>} />
             <Route path="/branch/garga/exhibition-mall" element={<ProtectedRoute allowed="garga"><GargaExhibitionMall /></ProtectedRoute>} />
             <Route path="/branch/garga/sales-mall" element={<ProtectedRoute allowed="garga"><GargaSalesMall /></ProtectedRoute>} />
             <Route path="/branch/garga/baika" element={<ProtectedRoute allowed="garga"><GargaBaika /></ProtectedRoute>} />
@@ -184,7 +180,6 @@ export default function App() {
             <Route path="/branch/ghaza/mena_wahid" element={<ProtectedRoute allowed="ghaza"><GhazaMenaWahid /></ProtectedRoute>} />
             <Route path="/branch/ghaza/baika" element={<ProtectedRoute allowed="ghaza"><GhazaBaika /></ProtectedRoute>} />
 
-            {/* 404 */}
             <Route path="*" element={<div style={{ color: "#fff" }}>الصفحة غير موجودة</div>} />
           </Routes>
         </main>
