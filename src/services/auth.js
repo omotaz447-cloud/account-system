@@ -4,37 +4,37 @@
 const USERS = [
   {
     email: "admin@system.com",
-    password: "123456",
+    password: "waheedwaheed662003",
     role: "admin",
     allowedPage: "all"
   },
   {
     email: "belina@system.com",
-    password: "123456",
+    password: "waheedsystem1920",
     role: "belina",
     allowedPage: "belina"
   },
   {
     email: "garga@system.com",
-    password: "123456",
+    password: "systemsystem2252",
     role: "garga",
     allowedPage: "garga"
   },
   {
     email: "dalaa@system.com",
-    password: "123456",
+    password: "luckysystem6060",
     role: "dalaa",
     allowedPage: "dalaa"
   },
   {
     email: "seema@system.com",
-    password: "123456",
+    password: "veryeffort5050",
     role: "seema",
     allowedPage: "seema"
   },
   {
     email: "ghaza@system.com",
-    password: "123456",
+    password: "workhard60050",
     role: "ghaza",
     allowedPage: "ghaza"
   }
