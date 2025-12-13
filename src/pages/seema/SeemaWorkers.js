@@ -17,6 +17,7 @@ export default function SeemaWorkers() {
       title="حسابات عمال سنتر سيما"
       fields={fields}
       numericFields={["withdraw"]}
+       enableAttendance={true}
     />
   );
 }

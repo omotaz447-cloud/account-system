@@ -9,5 +9,5 @@ export default function GhazaWorkers() {
     { name: "date", label: "التاريخ", type: "date" },
     { name: "withdraw", label: "السحب", type: "number" },
   ];
-  return <AdvancedSubCRUD branchId="ghaza" dataKey="workers" title="حسابات عمال سنتر غزه" fields={fields} numericFields={["withdraw"]} />;
+  return <AdvancedSubCRUD branchId="ghaza" dataKey="workers" title="حسابات عمال سنتر غزه" fields={fields} numericFields={["withdraw"]} enableAttendance={true} />;
 }

@@ -4,7 +4,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import PropTypes from "prop-types";
 
-// Firestore CRUD
 import {
   readRecords,
   saveRecord,
@@ -13,7 +12,7 @@ import {
 } from "../services/firestoreStorage";
 
 /**
- * AdvancedSubCRUD – نسخة تعمل بالكامل مع Cloud Firestore
+ * AdvancedSubCRUD – حسابات محاسبية مضبوطة
  */
 export default function AdvancedSubCRUD({
   branchId,
@@ -41,7 +40,6 @@ export default function AdvancedSubCRUD({
   const [nameQ, setNameQ] = useState("");
   const [dateQ, setDateQ] = useState("");
 
-  // Load data from Firestore
   async function loadData() {
     const data = await readRecords(branchId, dataKey);
     setRows(data);
@@ -51,7 +49,6 @@ export default function AdvancedSubCRUD({
     const init = {};
     effectiveFields.forEach(f => (init[f.name] = ""));
     setForm(init);
-
     loadData();
   }, [branchId, dataKey, effectiveFields]);
 
@@ -60,11 +57,7 @@ export default function AdvancedSubCRUD({
 
     effectiveFields.forEach(f => {
       let val = form[f.name];
-
-      if (f.type === "number") {
-        val = val === "" ? 0 : Number(val);
-      }
-
+      if (f.type === "number") val = val === "" ? 0 : Number(val);
       payload[f.name] = val;
     });
 
@@ -85,19 +78,26 @@ export default function AdvancedSubCRUD({
   function handleEdit(item) {
     setEditingId(item.id);
     const newForm = {};
-
     effectiveFields.forEach(f => {
       newForm[f.name] = item[f.name] ?? "";
     });
-
     setForm(newForm);
     window.scrollTo({ top: 0, behavior: "smooth" });
   }
 
   async function handleDelete(id) {
     if (!window.confirm("هل أنت متأكد من الحذف؟")) return;
-
     await deleteRecord(branchId, dataKey, id);
+    loadData();
+  }
+
+  /* =========================
+     🔵 إضافة الحضور / الغياب
+     ========================= */
+  async function markAttendance(id, status) {
+    await updateRecord(branchId, dataKey, id, {
+      attendance: status
+    });
     loadData();
   }
 
@@ -112,33 +112,54 @@ export default function AdvancedSubCRUD({
 
     if (dateQ) {
       let recordDate = "";
-
-      if (typeof r.date === "string") {
-        recordDate = r.date;
-      } else if (r.createdAt?.toDate) {
+      if (typeof r.date === "string") recordDate = r.date;
+      else if (r.createdAt?.toDate)
         recordDate = r.createdAt.toDate().toISOString().slice(0, 10);
-      }
-
       if (!recordDate || recordDate !== dateQ) return false;
     }
 
     return true;
   });
 
-  // =====================================
-  // ✅ إجمالي الجدول كله (بعد الفلترة)
-  // =====================================
-  const tableTotal = useMemo(() => {
-    return filteredRows.reduce((sum, row) => {
-      return (
-        sum +
-        numericFields.reduce((s, key) => {
-          const v = Number(row[key] || 0);
-          return s + (isNaN(v) ? 0 : v);
-        }, 0)
+  /* =====================================================
+     🧮 منطق محاسبي مضبوط (كما هو)
+  ===================================================== */
+  const getRowTotal = row => {
+    const getVal = keywords => {
+      const field = effectiveFields.find(f =>
+        keywords.some(k =>
+          (f.name + " " + (f.label || "")).toLowerCase().includes(k)
+        )
       );
-    }, 0);
-  }, [filteredRows, numericFields]);
+      return field ? Number(row[field.name] || 0) : 0;
+    };
+
+    const afterInventory = getVal(["بعد", "after"]);
+    const cashHome = getVal(["نقدي", "cash"]);
+    const withdraw = getVal(["سحب", "withdraw"]);
+    const insurance = getVal(["تأمين", "insurance"]);
+
+    return afterInventory + cashHome - withdraw - insurance;
+  };
+
+  const tableTotal = useMemo(() => {
+    return filteredRows.reduce((sum, r) => sum + getRowTotal(r), 0);
+  }, [filteredRows]);
+
+  /* =========================
+     ✅ ADDED: إجمالي الحضور / الغياب
+     ========================= */
+  const attendanceTotals = useMemo(() => {
+    let present = 0;
+    let absent = 0;
+
+    filteredRows.forEach(r => {
+      if (r.attendance === "present") present++;
+      if (r.attendance === "absent") absent++;
+    });
+
+    return { present, absent };
+  }, [filteredRows]);
 
   return (
     <div style={{ width: "100%" }}>
@@ -146,33 +167,10 @@ export default function AdvancedSubCRUD({
 
       {/* Filters */}
       <div style={{ marginBottom: 12, display: "flex", gap: 8, flexWrap: "wrap" }}>
-        <input
-          className="input"
-          placeholder="بحث عام..."
-          value={q}
-          onChange={e => setQ(e.target.value)}
-          style={{ minWidth: 180 }}
-        />
-
-        <input
-          className="input"
-          placeholder="بحث بالاسم..."
-          value={nameQ}
-          onChange={e => setNameQ(e.target.value)}
-          style={{ minWidth: 180 }}
-        />
-
-        <input
-          className="input"
-          type="date"
-          value={dateQ}
-          onChange={e => setDateQ(e.target.value)}
-          style={{ minWidth: 180 }}
-        />
-
-        <button className="btn ghost" onClick={() => loadData()}>
-          تحديث
-        </button>
+        <input className="input" placeholder="بحث عام..." value={q} onChange={e => setQ(e.target.value)} />
+        <input className="input" placeholder="بحث بالاسم..." value={nameQ} onChange={e => setNameQ(e.target.value)} />
+        <input className="input" type="date" value={dateQ} onChange={e => setDateQ(e.target.value)} />
+        <button className="btn ghost" onClick={loadData}>تحديث</button>
       </div>
 
       {/* Form */}
@@ -188,24 +186,9 @@ export default function AdvancedSubCRUD({
               onChange={e => setForm({ ...form, [f.name]: e.target.value })}
             />
           ))}
-
           <button className="btn" onClick={handleAddOrUpdate}>
             {editingId ? "حفظ" : "إضافة"}
           </button>
-
-          {editingId && (
-            <button
-              className="btn ghost"
-              onClick={() => {
-                setEditingId(null);
-                const cleared = {};
-                effectiveFields.forEach(f => (cleared[f.name] = ""));
-                setForm(cleared);
-              }}
-            >
-              إلغاء
-            </button>
-          )}
         </div>
       </div>
 
@@ -219,6 +202,12 @@ export default function AdvancedSubCRUD({
                   {f.label}
                 </th>
               ))}
+              <th style={{ textAlign: "right" }}>إجمالي السطر</th>
+
+              {enableAttendance && (
+                <th style={{ textAlign: "center" }}>الحضور</th>
+              )}
+
               <th style={{ textAlign: "center" }}>إجراءات</th>
             </tr>
           </thead>
@@ -228,15 +217,37 @@ export default function AdvancedSubCRUD({
               <tr key={r.id}>
                 {effectiveFields.map(f => (
                   <td key={f.name} style={{ padding: 8 }}>
-                    {r[f.name] || "-"}
+                    {r[f.name] ?? "-"}
                   </td>
                 ))}
+
+                <td style={{ padding: 8, fontWeight: "bold" }}>
+                  {getRowTotal(r)}
+                </td>
+
+                {enableAttendance && (
+                  <td style={{ textAlign: "center" }}>
+                    <button
+                      className="btn ghost"
+                      style={{ marginInlineEnd: 6 }}
+                      onClick={() => markAttendance(r.id, "present")}
+                    >
+                      حضور
+                    </button>
+                    <button
+                      className="btn"
+                      style={{ background: "#dc2626" }}
+                      onClick={() => markAttendance(r.id, "absent")}
+                    >
+                      غياب
+                    </button>
+                  </td>
+                )}
 
                 <td style={{ textAlign: "center" }}>
                   <button className="btn ghost" onClick={() => handleEdit(r)}>
                     تعديل
                   </button>
-
                   <button
                     className="btn"
                     style={{ background: "#dc2626" }}
@@ -247,31 +258,19 @@ export default function AdvancedSubCRUD({
                 </td>
               </tr>
             ))}
-
-            {filteredRows.length === 0 && (
-              <tr>
-                <td
-                  colSpan={effectiveFields.length + 1}
-                  style={{ textAlign: "center" }}
-                >
-                  لا توجد بيانات
-                </td>
-              </tr>
-            )}
           </tbody>
         </table>
 
-        {/* ✅ إجمالي الجدول */}
-        <div
-          style={{
-            marginTop: 14,
-            padding: 12,
-            fontWeight: "bold",
-            textAlign: "left"
-          }}
-        >
-          الإجمالي: {tableTotal}
+        <div style={{ marginTop: 14, padding: 12, fontWeight: "bold", textAlign: "left" }}>
+          إجمالي الجدول: {tableTotal}
         </div>
+
+        {/* ✅ ADDED: إجمالي الحضور / الغياب */}
+        {enableAttendance && (
+          <div style={{ padding: 12, fontWeight: "bold" }}>
+            إجمالي الحضور: {attendanceTotals.present} | إجمالي الغياب: {attendanceTotals.absent}
+          </div>
+        )}
       </div>
     </div>
   );

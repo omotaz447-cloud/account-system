@@ -9,5 +9,5 @@ export default function DalaaWorkers() {
     { name: "date", label: "التاريخ", type: "date" },
     { name: "withdraw", label: "السحب", type: "number" },
   ];
-  return <AdvancedSubCRUD branchId="dalaa" dataKey="workers" title="حسابات عمال سنتر دلع الهوانم" fields={fields} numericFields={["withdraw"]} />;
+  return <AdvancedSubCRUD branchId="dalaa" dataKey="workers" title="حسابات عمال سنتر دلع الهوانم" fields={fields} numericFields={["withdraw"]}  enableAttendance={true}/>;
 }

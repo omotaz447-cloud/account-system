@@ -9,5 +9,5 @@ export default function GargaWorkersMall() {
     { name: "date", label: "التاريخ", type: "date" },
     { name: "withdraw", label: "السحب", type: "number" },
   ];
-  return <AdvancedSubCRUD branchId="garga" dataKey="workers" title="حسابات عمال جرجا — معرض مول العرب" fields={fields} numericFields={["withdraw"]} />;
+  return <AdvancedSubCRUD branchId="garga" dataKey="workers" title="حسابات عمال جرجا — معرض مول العرب" fields={fields} numericFields={["withdraw"]}  enableAttendance={true} />;
 }

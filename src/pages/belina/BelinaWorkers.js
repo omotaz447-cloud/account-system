@@ -9,5 +9,5 @@ export default function BelinaWorkers() {
     { name: "date", label: "التاريخ", type: "date" },
     { name: "withdraw", label: "السحب", type: "number" },
   ];
-  return <AdvancedSubCRUD branchId="belina" dataKey="workers" title="حساب عمال البلينا" fields={fields} numericFields={["withdraw"]} />;
+  return <AdvancedSubCRUD branchId="belina" dataKey="workers" title="حساب عمال البلينا" fields={fields} numericFields={["withdraw"]}  enableAttendance={true}/>;
 }
