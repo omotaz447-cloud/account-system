@@ -124,23 +124,51 @@ export default function AdvancedSubCRUD({
   /* =========================
      🧮 إجمالي السطر
      ========================= */
-  const getRowTotal = row => {
-    const getVal = keywords => {
-      const field = effectiveFields.find(f =>
-        keywords.some(k =>
-          (f.name + " " + (f.label || "")).toLowerCase().includes(k)
-        )
-      );
-      return field ? Number(row[field.name] || 0) : 0;
-    };
-
-    const afterInventory = getVal(["بعد", "after"]);
-    const cashHome = getVal(["نقدي", "cash"]);
-    const withdraw = getVal(["سحب", "withdraw"]);
-    const insurance = getVal(["تأمين", "insurance"]);
-
-    return afterInventory + cashHome - withdraw - insurance;
+const getRowTotal = row => {
+  const getVal = keywords => {
+    const field = effectiveFields.find(f =>
+      keywords.some(k =>
+        (f.name + " " + (f.label || "")).toLowerCase().includes(k)
+      )
+    );
+    return field ? Number(row[field.name] || 0) : 0;
   };
+
+  // ===== القيم العامة =====
+  const fixedAfter = getVal(["بعد", "after"]);
+  const cashHome = getVal(["نقدي", "cash"]);
+  const bless = getVal(["كرم"]);
+  const withdraw = getVal(["سحب", "withdraw"]);
+  const insurance = getVal(["تأمين", "insurance"]);
+
+  // ===== حسابات التجار =====
+  const invoice = getVal(["فاتورة", "invoice"]);
+  const payment = getVal(["دفعة", "payment"]);
+
+  // ===== المبيعات (كل الفروع) =====
+  const rent = getVal(["ايجار", "إيجار", "rent"]);
+  const expenses = getVal(["مصاريف", "expense"]);
+  const extra = getVal(["خوارج", "extra"]);
+  const sold = getVal(["مباع", "sold"]);
+
+  // 1️⃣ الحسابات الرئيسية
+  if (fixedAfter !== 0) {
+    return fixedAfter + cashHome - withdraw - insurance;
+  }
+
+  // 2️⃣ حسابات التجار
+  if (invoice !== 0 || payment !== 0) {
+    return payment - invoice  ;
+  }
+
+  // 3️⃣ المبيعات (كل الفروع)
+  if (rent !== 0 || expenses !== 0 || extra !== 0 || sold !== 0) {
+    return sold - (rent + expenses + extra)  ;
+  }
+
+  // 4️⃣ باقي الصفحات
+  return cashHome + bless - withdraw;
+};
 
   const tableTotal = useMemo(() => {
     return filteredRows.reduce((sum, r) => sum + getRowTotal(r), 0);
