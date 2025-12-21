@@ -2,38 +2,47 @@
 import React from "react";
 import PropTypes from "prop-types";
 import SubPageCard from "../components/SubPageCard";
+import { getLoggedUser } from "../services/auth";
 
 export default function BranchPage({ branch }) {
+  const user = getLoggedUser();
+  const isAdmin = user?.role === "admin";
+
   const ROUTES = {
     belina: {
       center: "center",
       workers: "workers",
       traders: "traders",
       sales: "sales-exhibition",
+      main: "center", // الحسابات الرئيسية
     },
     garga: {
       center: "center",
       workers: "workers-mall",
       traders: "traders-mall",
       sales: "sales-mall",
+      main: "center",
     },
     dalaa: {
       center: "center",
       workers: "workers",
       traders: "traders",
       sales: "sales",
+      main: "primary",
     },
     seema: {
       center: "center",
       workers: "workers",
       traders: "traders",
       sales: "sales",
+      main: "main",
     },
     ghaza: {
       center: "center",
       workers: "workers",
       traders: "traders",
       sales: "sales",
+      main: "main",
     },
   };
 
@@ -42,9 +51,10 @@ export default function BranchPage({ branch }) {
   const pages = [
     {
       title: `${branch.name} — الحسابات الرئيسية`,
-      desc: "سجلات عامة",
-      route: `/branch/${branch.id}/${r.center}`,
-      icon: "🏬",
+      desc: "السجلات العامة",
+      route: `/branch/${branch.id}/${r.main}`,
+      icon: "🏛️",
+      adminOnly: true, // 👈 مهم
     },
     {
       title: `حسابات عمال ${branch.name}`,
@@ -66,6 +76,11 @@ export default function BranchPage({ branch }) {
     },
   ];
 
+  const visiblePages = pages.filter(p => {
+    if (p.adminOnly && !isAdmin) return false;
+    return true;
+  });
+
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
       <div className="header" style={{ marginBottom: 6 }}>
@@ -76,7 +91,7 @@ export default function BranchPage({ branch }) {
       </div>
 
       <div className="subcards" style={{ marginBottom: 0, minHeight: "62vh" }}>
-        {pages.map((p, i) => (
+        {visiblePages.map((p, i) => (
           <SubPageCard
             key={i}
             title={p.title}

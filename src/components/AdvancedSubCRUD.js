@@ -92,7 +92,7 @@ export default function AdvancedSubCRUD({
   }
 
   /* =========================
-     🔵 إضافة الحضور / الغياب
+     🔵 الحضور / الغياب
      ========================= */
   async function markAttendance(id, status) {
     await updateRecord(branchId, dataKey, id, {
@@ -121,9 +121,9 @@ export default function AdvancedSubCRUD({
     return true;
   });
 
-  /* =====================================================
-     🧮 منطق محاسبي مضبوط (كما هو)
-  ===================================================== */
+  /* =========================
+     🧮 إجمالي السطر
+     ========================= */
   const getRowTotal = row => {
     const getVal = keywords => {
       const field = effectiveFields.find(f =>
@@ -146,9 +146,23 @@ export default function AdvancedSubCRUD({
     return filteredRows.reduce((sum, r) => sum + getRowTotal(r), 0);
   }, [filteredRows]);
 
-  /* =========================
-     ✅ ADDED: إجمالي الحضور / الغياب
-     ========================= */
+  const columnTotals = useMemo(() => {
+    const totals = {};
+
+    effectiveFields.forEach(f => {
+      if (f.type !== "number") {
+        totals[f.name] = "";
+        return;
+      }
+
+      totals[f.name] = filteredRows.reduce((sum, r) => {
+        return sum + Number(r[f.name] || 0);
+      }, 0);
+    });
+
+    return totals;
+  }, [filteredRows, effectiveFields]);
+
   const attendanceTotals = useMemo(() => {
     let present = 0;
     let absent = 0;
@@ -205,7 +219,10 @@ export default function AdvancedSubCRUD({
               <th style={{ textAlign: "right" }}>إجمالي السطر</th>
 
               {enableAttendance && (
-                <th style={{ textAlign: "center" }}>الحضور</th>
+                <>
+                  <th style={{ textAlign: "center" }}>حاضر</th>
+                  <th style={{ textAlign: "center" }}>غائب</th>
+                </>
               )}
 
               <th style={{ textAlign: "center" }}>إجراءات</th>
@@ -226,22 +243,29 @@ export default function AdvancedSubCRUD({
                 </td>
 
                 {enableAttendance && (
-                  <td style={{ textAlign: "center" }}>
-                    <button
-                      className="btn ghost"
-                      style={{ marginInlineEnd: 6 }}
-                      onClick={() => markAttendance(r.id, "present")}
-                    >
-                      حضور
-                    </button>
-                    <button
-                      className="btn"
-                      style={{ background: "#dc2626" }}
-                      onClick={() => markAttendance(r.id, "absent")}
-                    >
-                      غياب
-                    </button>
-                  </td>
+                  <>
+                    <td style={{ textAlign: "center" }}>
+                      <input
+                        type="checkbox"
+                        checked={r.attendance === "present"}
+                        onChange={() => markAttendance(r.id, "present")}
+                      />
+                      {r.attendance === "present" && (
+                        <span style={{ color: "#22c55e", marginInlineStart: 6 }}>✔</span>
+                      )}
+                    </td>
+
+                    <td style={{ textAlign: "center" }}>
+                      <input
+                        type="checkbox"
+                        checked={r.attendance === "absent"}
+                        onChange={() => markAttendance(r.id, "absent")}
+                      />
+                      {r.attendance === "absent" && (
+                        <span style={{ color: "#ef4444", marginInlineStart: 6 }}>✖</span>
+                      )}
+                    </td>
+                  </>
                 )}
 
                 <td style={{ textAlign: "center" }}>
@@ -258,6 +282,21 @@ export default function AdvancedSubCRUD({
                 </td>
               </tr>
             ))}
+
+            {/* ===== صف الإجماليات ===== */}
+            <tr style={{ background: "rgba(0,0,0,0.05)", fontWeight: "bold" }}>
+              {effectiveFields.map(f => (
+                <td key={f.name} style={{ padding: 8 }}>
+                  {columnTotals[f.name] !== "" ? columnTotals[f.name] : "—"}
+                </td>
+              ))}
+
+              <td style={{ padding: 8 }}>{tableTotal}</td>
+
+              {enableAttendance && <td colSpan={2} style={{ textAlign: "center" }}>—</td>}
+
+              <td style={{ textAlign: "center" }}>الإجمالي</td>
+            </tr>
           </tbody>
         </table>
 
@@ -265,10 +304,9 @@ export default function AdvancedSubCRUD({
           إجمالي الجدول: {tableTotal}
         </div>
 
-        {/* ✅ ADDED: إجمالي الحضور / الغياب */}
         {enableAttendance && (
           <div style={{ padding: 12, fontWeight: "bold" }}>
-            إجمالي الحضور: {attendanceTotals.present} | إجمالي الغياب: {attendanceTotals.absent}
+            ✔️ الحضور: {attendanceTotals.present} | ❌ الغياب: {attendanceTotals.absent}
           </div>
         )}
       </div>

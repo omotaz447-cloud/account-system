@@ -83,6 +83,8 @@ export default function App() {
   const location = useLocation();
   const branches = listBranches() || [];
   const user = getLoggedUser();
+ 
+
 
   useEffect(() => {
     if (!user && location.pathname !== "/login") {
@@ -125,7 +127,7 @@ export default function App() {
 <Route
   path="/branch/belina/center"
   element={
-    <ProtectedRoute allowed="belina">
+    <ProtectedRoute allowed="admin">
       <BelinaExhibition />
     </ProtectedRoute>
   }
@@ -144,7 +146,7 @@ export default function App() {
 <Route
   path="/branch/garga/center"
   element={
-    <ProtectedRoute allowed="garga">
+    <ProtectedRoute allowed="admin">
       <GargaExhibitionMall />
     </ProtectedRoute>
   }
@@ -164,7 +166,15 @@ export default function App() {
             <Route path="/branch/dalaa/traders" element={<ProtectedRoute allowed="dalaa"><DalaaTraders /></ProtectedRoute>} />
             <Route path="/branch/dalaa/center" element={<ProtectedRoute allowed="dalaa"><DalaaCenter /></ProtectedRoute>} />
             <Route path="/branch/dalaa/sales" element={<ProtectedRoute allowed="dalaa"><DalaaSales /></ProtectedRoute>} />
-            <Route path="/branch/dalaa/primary" element={<ProtectedRoute allowed="dalaa"><DalaaPrimary /></ProtectedRoute>} />
+<Route
+  path="/branch/dalaa/primary"
+  element={
+    <ProtectedRoute allowed="admin">
+      <DalaaPrimary />
+    </ProtectedRoute>
+  }
+/>
+
             <Route path="/branch/dalaa/mahmoud" element={<ProtectedRoute allowed="dalaa"><DalaaMahmoud /></ProtectedRoute>} />
             <Route path="/branch/dalaa/wahid" element={<ProtectedRoute allowed="dalaa"><DalaaWahid /></ProtectedRoute>} />
             <Route path="/branch/dalaa/basem" element={<ProtectedRoute allowed="dalaa"><DalaaBasem /></ProtectedRoute>} />
@@ -175,7 +185,16 @@ export default function App() {
             <Route path="/branch/seema/workers" element={<ProtectedRoute allowed="seema"><SeemaWorkers /></ProtectedRoute>} />
             <Route path="/branch/seema/sales" element={<ProtectedRoute allowed="seema"><SeemaSales /></ProtectedRoute>} />
             <Route path="/branch/seema/traders" element={<ProtectedRoute allowed="seema"><SeemaTraders /></ProtectedRoute>} />
-            <Route path="/branch/seema/main" element={<ProtectedRoute allowed="seema"><SeemaMain /></ProtectedRoute>} />
+<Route
+  path="/branch/seema/main"
+  element={
+    <ProtectedRoute allowed="admin">
+      <SeemaMain />
+    </ProtectedRoute>
+  }
+/>
+
+
             <Route path="/branch/seema/milad" element={<ProtectedRoute allowed="seema"><SeemaMilad /></ProtectedRoute>} />
             <Route path="/branch/seema/wahid" element={<ProtectedRoute allowed="seema"><SeemaWahid /></ProtectedRoute>} />
             <Route path="/branch/seema/basem" element={<ProtectedRoute allowed="seema"><SeemaBasem /></ProtectedRoute>} />
@@ -187,7 +206,16 @@ export default function App() {
             <Route path="/branch/ghaza/center" element={<ProtectedRoute allowed="ghaza"><GhazaCenter /></ProtectedRoute>} />
             <Route path="/branch/ghaza/traders" element={<ProtectedRoute allowed="ghaza"><GhazaTraders /></ProtectedRoute>} />
             <Route path="/branch/ghaza/sales" element={<ProtectedRoute allowed="ghaza"><GhazaSales /></ProtectedRoute>} />
-            <Route path="/branch/ghaza/main" element={<ProtectedRoute allowed="ghaza"><GhazaMain /></ProtectedRoute>} />
+<Route
+  path="/branch/ghaza/main"
+  element={
+    <ProtectedRoute allowed="admin">
+      <GhazaMain />
+    </ProtectedRoute>
+  }
+/>
+
+
             <Route path="/branch/ghaza/mahmoud" element={<ProtectedRoute allowed="ghaza"><GhazaMahmoud /></ProtectedRoute>} />
             <Route path="/branch/ghaza/wahid" element={<ProtectedRoute allowed="ghaza"><GhazaWahid /></ProtectedRoute>} />
             <Route path="/branch/ghaza/basem_wahid" element={<ProtectedRoute allowed="ghaza"><GhazaBasemWahid /></ProtectedRoute>} />
