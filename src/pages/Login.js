@@ -34,7 +34,6 @@ export default function LoginPage() {
     setLoading(false);
 
     if (!res.ok) {
-      console.error("Login error:", res.error);
       setErr("اسم المستخدم أو كلمة المرور غير صحيحة");
       return;
     }
@@ -43,146 +42,40 @@ export default function LoginPage() {
   };
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        background: "linear-gradient(180deg,#0b1220,#081025)",
-        padding: 20,
-      }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        style={{
-          width: 420,
-          maxWidth: "calc(100% - 40px)",
-          padding: 28,
-          borderRadius: 14,
-          background:
-            "linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02))",
-          boxShadow: "0 12px 40px rgba(2,6,23,0.6)",
-          backdropFilter: "blur(8px) saturate(120%)",
-          border: "1px solid rgba(255,255,255,0.06)",
-          color: "#fff",
-        }}
-      >
-        <h2
-          style={{
-            margin: 0,
-            marginBottom: 12,
-            fontSize: 20,
-            color: "#fff",
-            fontWeight: 800,
-          }}
-        >
-          تسجيل الدخول
-        </h2>
-
-        <div style={{ marginBottom: 10, color: "#cbd5e1" }}>
-          ادخل بياناتك للدخول إلى النظام
-        </div>
-
-        {/* Email */}
-        <label
-          style={{
-            display: "block",
-            marginTop: 10,
-            marginBottom: 6,
-            color: "#dfe7ff",
-          }}
-        >
-          البريد الإلكتروني
-        </label>
+    <div className="login-page">
+      <form className="login-card" onSubmit={handleSubmit}>
+        <h2>تسجيل الدخول</h2>
+        <p>ادخل بياناتك للدخول إلى النظام</p>
 
         <input
+          type="email"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="email"
+          placeholder="البريد الإلكتروني"
           autoComplete="username"
-          style={{
-            width: "100%",
-            padding: "10px 12px",
-            borderRadius: 8,
-            border: "1px solid rgba(255,255,255,0.08)",
-            background: "rgba(255,255,255,0.02)",
-            color: "#fff",
-            outline: "none",
-          }}
         />
-
-        {/* Password */}
-        <label
-          style={{
-            display: "block",
-            marginTop: 12,
-            marginBottom: 6,
-            color: "#dfe7ff",
-          }}
-        >
-          كلمة المرور
-        </label>
 
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="password"
+          placeholder="كلمة المرور"
           autoComplete="current-password"
-          style={{
-            width: "100%",
-            padding: "10px 12px",
-            borderRadius: 8,
-            border: "1px solid rgba(255,255,255,0.08)",
-            background: "rgba(255,255,255,0.02)",
-            color: "#fff",
-            outline: "none",
-          }}
         />
 
-        {/* Error */}
         {err && (
-          <div style={{ marginTop: 10, color: "#ffb3b3", fontWeight: 600 }}>
+          <div style={{ marginTop: 12, color: "#ffb3b3", fontWeight: 600 }}>
             {err}
           </div>
         )}
 
-        {/* Buttons */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            marginTop: 18,
-          }}
+        <button
+          type="submit"
+          className={`login-btn ${loading ? "loading" : ""}`}
+          disabled={loading}
         >
-          <button
-            type="submit"
-            disabled={loading}
-            style={{
-              padding: "10px 18px",
-              borderRadius: 10,
-              border: "none",
-              cursor: "pointer",
-              background: "linear-gradient(90deg,#4f46e5,#06b6d4)",
-              color: "#fff",
-              fontWeight: 700,
-              opacity: loading ? 0.7 : 1,
-            }}
-          >
-            {loading ? "جاري..." : "دخول"}
-          </button>
-
-          <div
-            style={{
-              color: "#9fb3ff",
-              alignSelf: "center",
-              fontSize: 13,
-            }}
-          >
-            {/* مكان رابط نسيان كلمة المرور */}
-          </div>
-        </div>
+          {loading ? "جاري..." : "دخول"}
+        </button>
       </form>
     </div>
   );

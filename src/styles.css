@@ -315,9 +315,9 @@ body {
 ====================== */
 .sidebar {
   position: fixed;
-  top: 0;
-  right: 0;                 /* مهم */
-  height: 100vh;
+  top: 74px;                       /* ⬅️ تحت الـ Topbar */
+  right: 0;
+  height: calc(100vh - 74px);      /* ⬅️ ما يغطيش اللي فوق */
   width: 260px;
   background: linear-gradient(180deg, #050714, #020617);
   border-left: 1px solid var(--border-soft);
@@ -325,6 +325,7 @@ body {
   overflow-y: auto;
   z-index: 100;
 }
+
 
 /* عناصر السايد بار */
 .sidebar a {
@@ -352,12 +353,20 @@ body {
 /* ======================
    MAIN CONTENT FIX
 ====================== */
+/* MAIN الافتراضي (زي اللوجين) */
 main {
-  margin-right: 260px;     /* نفس عرض السايد بار */
-  width: calc(100% - 260px);
+  margin-right: 0;
+  width: 100%;
   min-height: 100vh;
   padding: 28px;
 }
+
+/* لما يكون في sidebar */
+.sidebar + main {
+  margin-right: 260px;
+  width: calc(100% - 260px);
+}
+
 
 /* ======================
    TOPBAR FIX
@@ -378,6 +387,11 @@ main {
   }
 
   main {
+    margin-right: 0;
+    width: 100%;
+  }
+
+  .sidebar + main {
     margin-right: 82px;
     width: calc(100% - 82px);
   }
@@ -386,3 +400,97 @@ main {
     display: none;
   }
 }
+/* ===============================
+   LOGIN PAGE – PREMIUM REALISTIC
+================================ */
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(circle at top right, #1e293b, #020617 60%);
+}
+
+/* Login Card */
+.login-card {
+  width: 100%;
+  max-width: 420px;
+  padding: 36px 32px;
+  border-radius: 22px;
+  background: rgba(15, 23, 42, 0.75);
+  backdrop-filter: blur(22px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.75);
+
+  animation: loginEnter 0.7s cubic-bezier(.22,1,.36,1);
+}
+
+@keyframes loginEnter {
+  from {
+    opacity: 0;
+    transform: translateY(30px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Titles */
+.login-card h2 {
+  margin: 0;
+  font-size: 1.7rem;
+  font-weight: 800;
+  text-align: center;
+}
+
+.login-card p {
+  margin: 10px 0 26px;
+  text-align: center;
+  color: var(--text-soft);
+}
+
+/* Inputs */
+.login-card input {
+  margin-bottom: 16px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: rgba(2, 6, 23, 0.9);
+  border: 1px solid rgba(255,255,255,0.08);
+  transition: border 0.25s ease, box-shadow 0.25s ease;
+}
+
+.login-card input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.25);
+}
+
+/* Login Button */
+.login-btn {
+  width: 100%;
+  margin-top: 10px;
+  padding: 14px;
+  border-radius: 16px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(135deg, #2563eb, #22d3ee);
+  box-shadow: 0 15px 40px rgba(37, 99, 235, 0.45);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.login-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 25px 60px rgba(37, 99, 235, 0.65);
+}
+
+/* Loading state (اختياري) */
+.login-btn.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+
+
