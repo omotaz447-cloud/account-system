@@ -28,21 +28,21 @@ export default function BranchPage({ branch }) {
       workers: "workers",
       traders: "traders",
       sales: "sales",
-      main: "primary",
+      main: "center",
     },
     seema: {
       center: "center",
       workers: "workers",
       traders: "traders",
       sales: "sales",
-      main: "main",
+      main: "center",
     },
     ghaza: {
       center: "center",
       workers: "workers",
       traders: "traders",
       sales: "sales",
-      main: "main",
+      main: "center",
     },
   };
 

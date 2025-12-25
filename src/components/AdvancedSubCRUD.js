@@ -158,7 +158,7 @@ const getRowTotal = row => {
 
   // 2️⃣ حسابات التجار
   if (invoice !== 0 || payment !== 0) {
-    return payment - invoice  ;
+    return invoice - payment   ;
   }
 
   // 3️⃣ المبيعات (كل الفروع)
