@@ -257,75 +257,76 @@ const getRowTotal = row => {
             </tr>
           </thead>
 
-          <tbody>
-            {filteredRows.map(r => (
-              <tr key={r.id}>
-                {effectiveFields.map(f => (
-                  <td key={f.name} style={{ padding: 8 }}>
-                    {r[f.name] ?? "-"}
-                  </td>
-                ))}
+<tbody>
+  {/* ===== صف الإجماليات (أعلى الجدول) ===== */}
+  <tr style={{ background: "rgba(0,0,0,0.08)", fontWeight: "bold" }}>
+    {effectiveFields.map(f => (
+      <td key={f.name} style={{ padding: 8 }}>
+        {columnTotals[f.name] !== "" ? columnTotals[f.name] : "—"}
+      </td>
+    ))}
 
-                <td style={{ padding: 8, fontWeight: "bold" }}>
-                  {getRowTotal(r)}
-                </td>
+    <td style={{ padding: 8 }}>{tableTotal}</td>
 
-                {enableAttendance && (
-                  <>
-                    <td style={{ textAlign: "center" }}>
-                      <input
-                        type="checkbox"
-                        checked={r.attendance === "present"}
-                        onChange={() => markAttendance(r.id, "present")}
-                      />
-                      {r.attendance === "present" && (
-                        <span style={{ color: "#22c55e", marginInlineStart: 6 }}>✔</span>
-                      )}
-                    </td>
+    {enableAttendance && <td colSpan={2} style={{ textAlign: "center" }}>—</td>}
 
-                    <td style={{ textAlign: "center" }}>
-                      <input
-                        type="checkbox"
-                        checked={r.attendance === "absent"}
-                        onChange={() => markAttendance(r.id, "absent")}
-                      />
-                      {r.attendance === "absent" && (
-                        <span style={{ color: "#ef4444", marginInlineStart: 6 }}>✖</span>
-                      )}
-                    </td>
-                  </>
-                )}
+    <td style={{ textAlign: "center" }}>الإجمالي</td>
+  </tr>
 
-                <td style={{ textAlign: "center" }}>
-                  <button className="btn ghost" onClick={() => handleEdit(r)}>
-                    تعديل
-                  </button>
-                  <button
-                    className="btn"
-                    style={{ background: "#dc2626" }}
-                    onClick={() => handleDelete(r.id)}
-                  >
-                    حذف
-                  </button>
-                </td>
-              </tr>
-            ))}
+  {/* ===== صفوف البيانات ===== */}
+  {filteredRows.map(r => (
+    <tr key={r.id}>
+      {effectiveFields.map(f => (
+        <td key={f.name} style={{ padding: 8 }}>
+          {r[f.name] ?? "-"}
+        </td>
+      ))}
 
-            {/* ===== صف الإجماليات ===== */}
-            <tr style={{ background: "rgba(0,0,0,0.05)", fontWeight: "bold" }}>
-              {effectiveFields.map(f => (
-                <td key={f.name} style={{ padding: 8 }}>
-                  {columnTotals[f.name] !== "" ? columnTotals[f.name] : "—"}
-                </td>
-              ))}
+      <td style={{ padding: 8, fontWeight: "bold" }}>
+        {getRowTotal(r)}
+      </td>
 
-              <td style={{ padding: 8 }}>{tableTotal}</td>
+      {enableAttendance && (
+        <>
+          <td style={{ textAlign: "center" }}>
+            <input
+              type="checkbox"
+              checked={r.attendance === "present"}
+              onChange={() => markAttendance(r.id, "present")}
+            />
+            {r.attendance === "present" && (
+              <span style={{ color: "#22c55e", marginInlineStart: 6 }}>✔</span>
+            )}
+          </td>
 
-              {enableAttendance && <td colSpan={2} style={{ textAlign: "center" }}>—</td>}
+          <td style={{ textAlign: "center" }}>
+            <input
+              type="checkbox"
+              checked={r.attendance === "absent"}
+              onChange={() => markAttendance(r.id, "absent")}
+            />
+            {r.attendance === "absent" && (
+              <span style={{ color: "#ef4444", marginInlineStart: 6 }}>✖</span>
+            )}
+          </td>
+        </>
+      )}
 
-              <td style={{ textAlign: "center" }}>الإجمالي</td>
-            </tr>
-          </tbody>
+      <td style={{ textAlign: "center" }}>
+        <button className="btn ghost" onClick={() => handleEdit(r)}>
+          تعديل
+        </button>
+        <button
+          className="btn"
+          style={{ background: "#dc2626" }}
+          onClick={() => handleDelete(r.id)}
+        >
+          حذف
+        </button>
+      </td>
+    </tr>
+  ))}
+</tbody>
         </table>
 
         <div style={{ marginTop: 14, padding: 12, fontWeight: "bold", textAlign: "left" }}>
