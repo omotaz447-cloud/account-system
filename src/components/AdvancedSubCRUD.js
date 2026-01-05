@@ -101,7 +101,8 @@ export default function AdvancedSubCRUD({
     loadData();
   }
 
-  const filteredRows = rows.filter(r => {
+const filteredRows = rows
+  .filter(r => {
     if (q && !JSON.stringify(r).toLowerCase().includes(q.toLowerCase()))
       return false;
 
@@ -119,6 +120,15 @@ export default function AdvancedSubCRUD({
     }
 
     return true;
+  })
+  .sort((a, b) => {
+    // ترتيب من الأحدث للأقدم
+    const getDate = r => {
+      if (r.date) return new Date(r.date);
+      if (r.createdAt?.toDate) return r.createdAt.toDate();
+      return new Date(0);
+    };
+    return getDate(b) - getDate(a);
   });
 
   /* =========================
